@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
 import xyz.crearts.stream.pgq.integration.PgqInboundChannelAdapter;
+import xyz.crearts.stream.pgq.integration.PgqMessageSource;
 import xyz.crearts.stream.pgq.integration.PgqProducerMessageHandler;
 import xyz.crearts.stream.pgq.properties.PgqConsumerProperties;
 import xyz.crearts.stream.pgq.properties.PgqExtendedBindingProperties;
@@ -32,6 +33,14 @@ public class PgqMessageChannelBinder extends AbstractMessageChannelBinder<Extend
     @Override
     protected MessageProducer createConsumerEndpoint(ConsumerDestination destination, String group, ExtendedConsumerProperties<PgqConsumerProperties> properties) throws Exception {
         return new PgqInboundChannelAdapter(template, destination.getName(), group);
+    }
+
+    @Override
+    protected PolledConsumerResources createPolledConsumerResources(String name, String group, ConsumerDestination destination, ExtendedConsumerProperties<PgqConsumerProperties> consumerProperties) {
+        return new PolledConsumerResources(
+                new PgqMessageSource(template, destination.getName(), group),
+                registerErrorInfrastructure(destination, group, consumerProperties, true)
+        );
     }
 
     @Override
