@@ -7,10 +7,7 @@ import org.springframework.cloud.stream.binder.PollableMessageSource;
 import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.integration.core.MessageSource;
 import org.springframework.messaging.Message;
-import org.springframework.messaging.MessageHandler;
-import org.springframework.messaging.MessagingException;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.scheduling.annotation.Scheduled;
 
@@ -39,7 +36,6 @@ public class PubSubService {
     }
 
     @Bean
-    @DependsOnDatabaseInitialization
     Consumer<Message<String>> eventBusTest() {
         return msg -> {
             log.info("read msg: {}:{}", msg.getHeaders().get("TOPIC"), msg.getPayload());
