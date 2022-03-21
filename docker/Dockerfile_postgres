@@ -1,0 +1,10 @@
+FROM postgres:12
+
+RUN apt update && apt -y upgrade
+RUN apt -y install postgresql-12-pgq3 pgqd postgresql-server-dev-12 make git
+RUN git clone https://github.com/pgq/pgq-coop.git
+RUN cd pgq-coop && make install
+RUN echo "create extension if not exists pgq;\r\ncreate extension if not exists pgq_coop;" > export.sql
+RUN service pgqd start
+#RUN service postgresd-12 start
+#RUN psql -U postgres -h localhost -a -f export.sql

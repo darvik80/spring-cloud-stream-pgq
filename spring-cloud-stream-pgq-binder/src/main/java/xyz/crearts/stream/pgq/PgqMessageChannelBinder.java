@@ -1,5 +1,6 @@
 package xyz.crearts.stream.pgq;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.stream.binder.*;
 import org.springframework.cloud.stream.provisioning.ConsumerDestination;
 import org.springframework.cloud.stream.provisioning.ProducerDestination;
@@ -14,6 +15,7 @@ import xyz.crearts.stream.pgq.properties.PgqConsumerProperties;
 import xyz.crearts.stream.pgq.properties.PgqExtendedBindingProperties;
 import xyz.crearts.stream.pgq.properties.PgqProducerProperties;
 
+@Slf4j
 public class PgqMessageChannelBinder extends AbstractMessageChannelBinder<ExtendedConsumerProperties<PgqConsumerProperties>, ExtendedProducerProperties<PgqProducerProperties>, PgqProvisioningProvider>
         implements ExtendedPropertiesBinder<MessageChannel, PgqConsumerProperties, PgqProducerProperties> {
     private final JdbcTemplate template;
@@ -23,6 +25,14 @@ public class PgqMessageChannelBinder extends AbstractMessageChannelBinder<Extend
         super(null, provider);
         this.template = template;
         this.properties = properties;
+
+        try {
+            template.execute("create extension if not exists pgq");
+            template.execute("create extension if not exists pgq_coop");
+        } catch (Exception ex) {
+            log.warn("\033[1;31mPlease follow to instruction in \033[38;5;15mREADME.md\033[1;31m for setup pgq & pgq_coop extensions");
+            throw new RuntimeException("Please follow to instruction in README.md for setup pgq & pgq_coop extensions", ex);
+        }
     }
 
     @Override

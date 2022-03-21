@@ -11,13 +11,13 @@ import java.util.concurrent.TimeUnit;
 
 @Slf4j
 public class PgqInboundChannelAdapter extends MessageProducerSupport implements Runnable {
-    private final PgqRepository repository;
+    private final PgqRepositoryDefault repository;
 
     private final ScheduledExecutorService executor;
 
     public PgqInboundChannelAdapter(JdbcTemplate template, String topic, String groupId) {
-        repository = new PgqRepository(template, topic, groupId);
-        repository.register();
+        repository = new PgqRepositoryDefault(template, topic, groupId);
+        repository.registerConsumer();
 
         executor = Executors.newScheduledThreadPool(1);
         executor.scheduleWithFixedDelay(this, 0, 1000, TimeUnit.MILLISECONDS);

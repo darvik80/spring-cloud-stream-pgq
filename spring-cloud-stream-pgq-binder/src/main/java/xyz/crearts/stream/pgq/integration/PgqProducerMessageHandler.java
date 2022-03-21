@@ -9,18 +9,11 @@ import java.nio.charset.Charset;
 
 @Slf4j
 public class PgqProducerMessageHandler extends AbstractMessageHandler {
-    private final JdbcTemplate template;
-    private final String topic;
+    private final PgqRepository repository;
 
     public PgqProducerMessageHandler(JdbcTemplate template, String topic) {
-        this.template = template;
-        this.topic = topic;
-
-        if (0 < template.queryForObject("SELECT * FROM pgq.create_queue(?)", Long.class, topic)) {
-            log.info("create queue {}", topic);
-        } else {
-            log.info("queue {} already created", topic);
-        }
+        this.repository = new PgqRepositoryDefault(template, topic);
+        this.repository.createQueue();
     }
 
     @Override
@@ -34,7 +27,7 @@ public class PgqProducerMessageHandler extends AbstractMessageHandler {
         }
 
         if (data != null) {
-            template.queryForRowSet("SELECT * FROM pgq.insert_event(?, ?, ?, ?, '', '', '')", topic, tag, data, tag);
+            repository.publish(tag, data);
         }
     }
 }
