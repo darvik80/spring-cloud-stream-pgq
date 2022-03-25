@@ -5,10 +5,9 @@
     <parent>
         <groupId>xyz.crearts</groupId>
         <artifactId>spring-cloud-stream-pgq</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>1.0.0</version>
     </parent>
     <artifactId>spring-cloud-stream-pgq-app</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
     <name>spring-cloud-stream-pgq-app</name>
     <description>spring-cloud-stream-pgq-all</description>
 
@@ -37,13 +36,6 @@
         </dependency>
 
     </dependencies>
-
-    <dependencyManagement>
-        <dependencies>
-
-        </dependencies>
-    </dependencyManagement>
-
     <build>
         <plugins>
             <plugin>

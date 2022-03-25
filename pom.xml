@@ -11,7 +11,7 @@
     <packaging>pom</packaging>
     <groupId>xyz.crearts</groupId>
     <artifactId>spring-cloud-stream-pgq</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>spring-cloud-stream-pgq</name>
     <description>spring-cloud-stream-pgq</description>
     <properties>

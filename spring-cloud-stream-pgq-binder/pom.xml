@@ -5,11 +5,10 @@
     <parent>
         <groupId>xyz.crearts</groupId>
         <artifactId>spring-cloud-stream-pgq</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>1.0.0</version>
     </parent>
 
     <artifactId>spring-cloud-stream-pgq-binder</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
     <name>spring-cloud-stream-pgq-binder</name>
     <description>spring-cloud-stream-pgq-binder</description>
 
@@ -48,11 +47,4 @@
         </dependency>
 
     </dependencies>
-
-    <dependencyManagement>
-        <dependencies>
-
-        </dependencies>
-    </dependencyManagement>
-
 </project>
