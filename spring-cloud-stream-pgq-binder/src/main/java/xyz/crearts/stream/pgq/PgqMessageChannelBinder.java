@@ -8,9 +8,8 @@ import org.springframework.integration.core.MessageProducer;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
-import xyz.crearts.stream.pgq.integration.PgqInboundChannelAdapter;
-import xyz.crearts.stream.pgq.integration.PgqMessageSource;
-import xyz.crearts.stream.pgq.integration.PgqProducerMessageHandler;
+import org.springframework.util.StringUtils;
+import xyz.crearts.stream.pgq.integration.*;
 import xyz.crearts.stream.pgq.properties.PgqConsumerProperties;
 import xyz.crearts.stream.pgq.properties.PgqExtendedBindingProperties;
 import xyz.crearts.stream.pgq.properties.PgqProducerProperties;
@@ -40,16 +39,27 @@ public class PgqMessageChannelBinder extends AbstractMessageChannelBinder<Extend
         return new PgqProducerMessageHandler(template, destination.getName());
     }
 
-    @Override
-    protected MessageProducer createConsumerEndpoint(ConsumerDestination destination, String group, ExtendedConsumerProperties<PgqConsumerProperties> properties) throws Exception {
-        return new PgqInboundChannelAdapter(template, destination.getName(), group);
+    private PgqRepository getRepository(String name, String group, PgqConsumerProperties properties) {
+        PgqRepository repository;
+        if (StringUtils.hasText(properties.getConsumerId())) {
+            repository = new PgqRepositoryCoop(template, name, group, properties.getConsumerId());
+        } else {
+            repository = new PgqRepositoryDefault(template, name, group);
+        }
+
+        return repository;
     }
 
     @Override
-    protected PolledConsumerResources createPolledConsumerResources(String name, String group, ConsumerDestination destination, ExtendedConsumerProperties<PgqConsumerProperties> consumerProperties) {
+    protected MessageProducer createConsumerEndpoint(ConsumerDestination destination, String group, ExtendedConsumerProperties<PgqConsumerProperties> properties) throws Exception {
+        return new PgqInboundChannelAdapter(getRepository(destination.getName(), group, properties.getExtension()));
+    }
+
+    @Override
+    protected PolledConsumerResources createPolledConsumerResources(String name, String group, ConsumerDestination destination, ExtendedConsumerProperties<PgqConsumerProperties> properties) {
         return new PolledConsumerResources(
-                new PgqMessageSource(template, destination.getName(), group),
-                registerErrorInfrastructure(destination, group, consumerProperties, true)
+                new PgqMessageSource(getRepository(destination.getName(), group, properties.getExtension())),
+                registerErrorInfrastructure(destination, group, properties, true)
         );
     }
 

@@ -1,25 +1,36 @@
 package xyz.crearts.stream.pgq.integration;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.Lifecycle;
 import org.springframework.integration.endpoint.MessageProducerSupport;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.messaging.support.MessageBuilder;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 @Slf4j
 public class PgqInboundChannelAdapter extends MessageProducerSupport implements Runnable {
-    private final PgqRepositoryDefault repository;
+    private final PgqRepository repository;
 
-    private final ScheduledExecutorService executor;
+    private ScheduledExecutorService executor;
 
-    public PgqInboundChannelAdapter(JdbcTemplate template, String topic, String groupId) {
-        repository = new PgqRepositoryDefault(template, topic, groupId);
-        repository.registerConsumer();
+    public PgqInboundChannelAdapter(PgqRepository repository) {
+        this.repository = repository;
+        this.repository.registerConsumer();
+    }
 
-        executor = Executors.newScheduledThreadPool(1);
+    @Override
+    protected void doStart() {
+        executor = Executors.newScheduledThreadPool(
+                1,
+                new ThreadFactory() {
+                    int count = 0;
+
+                    @Override
+                    public Thread newThread(Runnable runnable) {
+                        return new Thread(runnable, String.format("pqg-in-ch-%d", ++count));
+                    }
+                }
+        );
         executor.scheduleWithFixedDelay(this, 0, 1000, TimeUnit.MILLISECONDS);
     }
 
@@ -33,7 +44,10 @@ public class PgqInboundChannelAdapter extends MessageProducerSupport implements 
                     for (var msg : msgs) {
                         this.sendMessage(
                                 MessageBuilder.withPayload(msg.getEvData())
-                                        .setHeader("TAG", msg.getEvHeaders().get("TAG"))
+                                        .setHeader(PgqHeader.TAG, msg.getEvHeaders().get(PgqHeader.TAG))
+                                        .setHeader(PgqHeader.TOPIC, msg.getEvHeaders().get(PgqHeader.TOPIC))
+                                        .setHeader(PgqHeader.GROUP, msg.getEvHeaders().get(PgqHeader.GROUP))
+                                        .setHeader(PgqHeader.CONSUMER, msg.getEvHeaders().get(PgqHeader.CONSUMER))
                                         .build()
                         );
                     }
@@ -47,5 +61,10 @@ public class PgqInboundChannelAdapter extends MessageProducerSupport implements 
         } catch (Exception ex) {
             log.warn("can't process pgp messages", ex);
         }
+    }
+
+    @Override
+    protected void doStop() {
+        executor.shutdown();
     }
 }

@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.integration.IntegrationMessageHeaderAccessor;
 import org.springframework.integration.acks.AcknowledgmentCallback;
 import org.springframework.integration.endpoint.AbstractMessageSource;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 
@@ -12,14 +11,14 @@ import java.util.*;
 
 @Slf4j
 public class PgqMessageSource extends AbstractMessageSource<Object> {
-    private final PgqRepositoryDefault repository;
+    private final PgqRepository repository;
     private List<PgqEvent> cache = Collections.emptyList();
     private Iterator<PgqEvent> iter = cache.iterator();
     private Set<Long> confirmed;
     private long batchId = 0;
 
-    public PgqMessageSource(JdbcTemplate template, String topic, String groupId) {
-        repository = new PgqRepositoryDefault(template, topic, groupId);
+    public PgqMessageSource(PgqRepository repository) {
+        this.repository = repository;
         repository.registerConsumer();
     }
 
@@ -56,7 +55,7 @@ public class PgqMessageSource extends AbstractMessageSource<Object> {
 
     private Message<?> doProcessMessage(long batchId, PgqEvent event) {
         return MessageBuilder.withPayload(event.getEvData())
-                .setHeader("TAG", event.getEvHeaders().get("TAG"))
+                .setHeader(PgqHeader.TAG, event.getEvHeaders().get(PgqHeader.TAG))
                 .setHeader(
                         IntegrationMessageHeaderAccessor.ACKNOWLEDGMENT_CALLBACK,
                         new AcknowledgmentCallback() {

@@ -7,9 +7,9 @@ import java.util.List;
 
 @Slf4j
 public class PgqRepositoryDefault implements PgqRepository {
-    private final JdbcTemplate template;
-    private final String topic;
-    private final String groupId;
+    protected final JdbcTemplate template;
+    protected final String topic;
+    protected final String groupId;
 
     public PgqRepositoryDefault(JdbcTemplate template, String topic, String groupId) {
         this.template = template;
@@ -65,7 +65,13 @@ public class PgqRepositoryDefault implements PgqRepository {
 
     @Override
     public List<PgqEvent> getNextBatch(Long id) {
-        return template.query("SELECT * FROM pgq.get_batch_events(?)", new PgqEventRowMapper(), id);
+        var events = template.query("SELECT * FROM pgq.get_batch_events(?)", new PgqEventRowMapper(), id);
+        events.forEach(item -> {
+            item.getEvHeaders().put(PgqHeader.TOPIC, topic);
+            item.getEvHeaders().put(PgqHeader.GROUP, groupId);
+        });
+
+        return events;
     }
 
     @Override

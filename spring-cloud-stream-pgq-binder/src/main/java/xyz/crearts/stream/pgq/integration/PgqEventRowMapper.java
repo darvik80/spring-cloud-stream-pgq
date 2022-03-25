@@ -21,11 +21,9 @@ public class PgqEventRowMapper implements RowMapper<PgqEvent> {
         var evHeaders = new HashMap<String, String>();
         var extra = rs.getString("ev_extra1");
         if (extra != null) {
-            evHeaders.put("TAGS", extra);
+            evHeaders.put(PgqHeader.TAG, extra);
         }
-        if (!evHeaders.isEmpty()) {
-            res.setEvHeaders(evHeaders);
-        }
+        res.setEvHeaders(evHeaders);
 
         return res;
     }
