@@ -33,7 +33,9 @@ public class PubSubService {
 
     @Scheduled(fixedDelay = 1000)
     public void poll() {
-        while (source.poll(msg -> log.info("poll msg: {}:{}", msg.getHeaders().get(PgqHeader.TOPIC), msg.getPayload()))) { }
+        while (source.poll(msg -> {
+            log.info("poll msg: {}:{}", msg.getHeaders().get(PgqHeader.TOPIC), msg.getPayload());
+        })) { }
     }
 
     @Bean

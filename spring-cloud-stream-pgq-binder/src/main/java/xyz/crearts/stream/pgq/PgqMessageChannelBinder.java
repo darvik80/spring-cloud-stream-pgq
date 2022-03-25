@@ -35,7 +35,7 @@ public class PgqMessageChannelBinder extends AbstractMessageChannelBinder<Extend
     }
 
     @Override
-    protected MessageHandler createProducerMessageHandler(ProducerDestination destination, ExtendedProducerProperties<PgqProducerProperties> producerProperties, MessageChannel errorChannel) throws Exception {
+    protected MessageHandler createProducerMessageHandler(ProducerDestination destination, ExtendedProducerProperties<PgqProducerProperties> properties, MessageChannel errorChannel) {
         return new PgqProducerMessageHandler(template, destination.getName());
     }
 
@@ -51,7 +51,7 @@ public class PgqMessageChannelBinder extends AbstractMessageChannelBinder<Extend
     }
 
     @Override
-    protected MessageProducer createConsumerEndpoint(ConsumerDestination destination, String group, ExtendedConsumerProperties<PgqConsumerProperties> properties) throws Exception {
+    protected MessageProducer createConsumerEndpoint(ConsumerDestination destination, String group, ExtendedConsumerProperties<PgqConsumerProperties> properties) {
         return new PgqInboundChannelAdapter(getRepository(destination.getName(), group, properties.getExtension()));
     }
 

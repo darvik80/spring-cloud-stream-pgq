@@ -10,5 +10,7 @@ public interface PgqRepository {
     Long getNextId();
     List<PgqEvent> getNextBatch(Long id);
 
+    boolean retry(long id, long evId);
+
     boolean releaseBatch(Long id);
 }

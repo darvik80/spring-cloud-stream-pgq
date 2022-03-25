@@ -27,7 +27,7 @@ public class PgqRepositoryCoop extends PgqRepositoryDefault {
 
     @Override
     public Long getNextId() {
-        var rec = template.queryForRowSet("SELECT * FROM pgq_coop.next_batch(?, ?, ?)", topic, groupId, consumerId);
+        var rec = template.queryForRowSet("SELECT * FROM pgq_coop.next_batch(?, ?, ?, '2s')", topic, groupId, consumerId);
         if (rec.next()) {
             var id = rec.getLong(1);
             if (id == 0) {
@@ -44,7 +44,7 @@ public class PgqRepositoryCoop extends PgqRepositoryDefault {
     public List<PgqEvent> getNextBatch(Long id) {
         var events = super.getNextBatch(id);
         events.forEach(item -> {
-            item.getEvHeaders().put("CONSUMER", consumerId);
+            item.getEvHeaders().put(PgqHeader.CONSUMER, consumerId);
         });
 
         return events;

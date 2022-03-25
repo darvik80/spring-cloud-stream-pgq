@@ -3,6 +3,7 @@ package xyz.crearts.stream.pgq.integration;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -65,13 +66,23 @@ public class PgqRepositoryDefault implements PgqRepository {
 
     @Override
     public List<PgqEvent> getNextBatch(Long id) {
-        var events = template.query("SELECT * FROM pgq.get_batch_events(?)", new PgqEventRowMapper(), id);
-        events.forEach(item -> {
-            item.getEvHeaders().put(PgqHeader.TOPIC, topic);
-            item.getEvHeaders().put(PgqHeader.GROUP, groupId);
-        });
+        try {
+            var events = template.query("SELECT * FROM pgq.get_batch_events(?)", new PgqEventRowMapper(), id);
+            events.forEach(item -> {
+                item.getEvHeaders().put(PgqHeader.TOPIC, topic);
+                item.getEvHeaders().put(PgqHeader.GROUP, groupId);
+            });
 
-        return events;
+            return events;
+        } catch (Exception ex) {
+            return Collections.emptyList();
+        }
+    }
+
+    public boolean retry(long id, long evId) {
+        var res = template.queryForObject("SELECT * FROM pgq.event_retry(?, ?, 5)", Long.class, id, evId);
+
+        return (res != null && res > 0);
     }
 
     @Override

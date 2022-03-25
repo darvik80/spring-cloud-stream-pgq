@@ -33,4 +33,6 @@ spring:
         event_bus-in-0:
           destination: event_bus_coop
           group: cid-event_bus-smart-home
+        event_bus-out-0:
+          destination: event_bus_coop
       pollable-source: event_bus

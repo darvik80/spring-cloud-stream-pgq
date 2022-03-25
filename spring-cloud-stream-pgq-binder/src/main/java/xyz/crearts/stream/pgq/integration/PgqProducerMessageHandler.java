@@ -18,7 +18,7 @@ public class PgqProducerMessageHandler extends AbstractMessageHandler {
 
     @Override
     protected void handleMessageInternal(Message<?> message) {
-        String tag = (String)message.getHeaders().get("TAG");
+        String tag = (String)message.getHeaders().get(PgqHeader.TAG);
         String data = null;
         if (message.getPayload() instanceof String) {
             data = (String) message.getPayload();
