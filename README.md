@@ -38,37 +38,31 @@ sudo apt install postgresql-${version}-pgq3 pgqd
 
 #### registry
 
-```postgresql
+```sql
 create extension if not exists pgq;
 ```
 
 #### usage example
 
-```postgresql
+```sql
 --- create queue
-select *
-from pgq.create_queue('event_bus');
+select * from pgq.create_queue('event_bus');
 
 --- register consumer
-select *
-from pgq.register_consumer('event_bus', 'cid-smart-home-event_bus');
+select * from pgq.register_consumer('event_bus', 'cid-smart-home-event_bus');
 
 --- publish message
-select *
-from pgq.insert_event('event_bus', 'dws-report', '{"status": "online"}');
+select * from pgq.insert_event('event_bus', 'dws-report', '{"status": "online"}');
 
 --- consume message {
 --- get batch id: example 1
-select *
-from pgq.next_batch('event_bus', 'cid-smart-home-event_bus');
+select * from pgq.next_batch('event_bus', 'cid-smart-home-event_bus');
 
--- get batch events by id
-select *
-from pgq.get_batch_events(1);
+--- get batch events by id
+select * from pgq.get_batch_events(1);
 
--- mark batch as processed
-select *
-from pgq.finish_batch(1);
+--- mark batch as processed
+select * from pgq.finish_batch(1);
 --- } consume message
 ```
 
@@ -87,40 +81,32 @@ sudo make install
 
 #### registry
 
-```postgresql
+```sql
 create extension if not exists pgq_coop;
 ```
 #### usage example
 
-```postgresql
+```sql
 --- create queue
-select *
-from pgq.create_queue('event_bus');
+select * from pgq.create_queue('event_bus');
 
 --- register consumer
-select *
-from pgq.register_subconsumer('event_bus', 'cid-smart-home-event_bus', 'node-1');
+select * from pgq.register_subconsumer('event_bus', 'cid-smart-home-event_bus', 'node-1');
 
 --- publish message
-select *
-from pgq.insert_event('event_bus', 'dws-report', '{"status": "online"}');
+select * from pgq.insert_event('event_bus', 'dws-report', '{"status": "online"}');
 
 --- consume message {
 --- get batch id: example 1
-select *
-from pgq_coop.next_batch('event_bus', 'cid-smart-home-event_bus', 'node-1');
+select * from pgq_coop.next_batch('event_bus', 'cid-smart-home-event_bus', 'node-1');
 
 --- get batch id: example 1
-select *
-from pgq_coop.next_batch('event_bus', 'cid-smart-home-event_bus', 'node-1', '1s');
+select * from pgq_coop.next_batch('event_bus', 'cid-smart-home-event_bus', 'node-1', '1s');
 
+--- get batch events by id
+select * from pgq.get_batch_events(1);
 
--- get batch events by id
-select *
-from pgq.get_batch_events(1);
-
--- mark batch as processed
-select *
-from pgq_coop.finish_batch(1);
+--- mark batch as processed
+select * from pgq_coop.finish_batch(1);
 --- } consume message
 ```

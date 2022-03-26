@@ -44,4 +44,11 @@
         <module>spring-cloud-stream-pgq-app</module>
     </modules>
 
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub Darvik Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/darvik80/spring-cloud-stream-pgq</url>
+        </repository>
+    </distributionManagement>
 </project>
