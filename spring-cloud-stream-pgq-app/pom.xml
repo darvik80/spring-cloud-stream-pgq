@@ -5,7 +5,7 @@
     <parent>
         <groupId>xyz.crearts</groupId>
         <artifactId>spring-cloud-stream-pgq</artifactId>
-        <version>1.0.0</version>
+        <version>1.0.1</version>
     </parent>
     <artifactId>spring-cloud-stream-pgq-app</artifactId>
     <name>spring-cloud-stream-pgq-app</name>

@@ -1,4 +1,4 @@
-# Spring Clound Stream Binder for PGQ
+# Spring Cloud Stream Binder for PGQ
 
 ## binder configuration
 ```yaml
