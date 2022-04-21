@@ -11,16 +11,37 @@
     <packaging>pom</packaging>
     <groupId>xyz.crearts</groupId>
     <artifactId>spring-cloud-stream-pgq</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <name>spring-cloud-stream-pgq</name>
     <description>spring-cloud-stream-pgq</description>
     <properties>
         <java.version>11</java.version>
+        <java.version>11</java.version>
+        <jdk.version>11</jdk.version>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+
         <spring-cloud.version>2021.0.1</spring-cloud.version>
+        <spring-cloud-stream.version>3.2.2</spring-cloud-stream.version>
+        <spring-cloud-function.version>3.2.3</spring-cloud-function.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>42.3.4</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-function-dependencies</artifactId>
+                <version>${spring-cloud-function.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
@@ -28,8 +49,18 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-stream-dependencies</artifactId>
+                <version>${spring-cloud-stream.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
+
 
     <dependencies>
         <dependency>

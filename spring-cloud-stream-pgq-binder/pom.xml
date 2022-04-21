@@ -5,7 +5,8 @@
     <parent>
         <groupId>xyz.crearts</groupId>
         <artifactId>spring-cloud-stream-pgq</artifactId>
-        <version>1.0.1</version>
+        <version>1.0.2</version>
+        <relativePath/>
     </parent>
 
     <artifactId>spring-cloud-stream-pgq-binder</artifactId>
@@ -16,7 +17,7 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.3.3</version>
+            <version>42.3.4</version>
         </dependency>
 
         <dependency>
