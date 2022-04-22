@@ -6,7 +6,6 @@
         <groupId>xyz.crearts</groupId>
         <artifactId>spring-cloud-stream-pgq</artifactId>
         <version>1.0.2</version>
-        <relativePath/>
     </parent>
 
     <artifactId>spring-cloud-stream-pgq-binder</artifactId>
