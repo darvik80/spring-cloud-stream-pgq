@@ -12,7 +12,7 @@ management:
 
 spring:
   datasource:
-    url: jdbc:postgresql://192.168.100.5:5432/smart_home
+    url: jdbc:postgresql://localhost:5432/smart_home
     username: postgres
     password: postgres
 
@@ -26,6 +26,10 @@ spring:
           eventBusTest-in-0:
             consumer:
               consumer-id: hello
+              tags: report
+          event_bus-in-0:
+            consumer:
+              tags: fake
       bindings:
         eventBusTest-in-0:
           destination: event_bus_coop

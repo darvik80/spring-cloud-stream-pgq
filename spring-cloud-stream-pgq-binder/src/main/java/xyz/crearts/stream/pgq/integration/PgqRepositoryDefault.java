@@ -36,9 +36,9 @@ public class PgqRepositoryDefault implements PgqRepository {
     public void registerConsumer() {
         var res = template.queryForObject("SELECT * FROM pgq.register_consumer(?, ?)", Long.class, topic, groupId);
         if (res != null && 0 < res) {
-            log.info("repair subscribe for {}:{}", topic, groupId);
+            log.info("Repair subscribe for {}:{}", topic, groupId);
         } else {
-            log.info("already subscribed for {}:{}", topic, groupId);
+            log.info("Already subscribed for {}:{}", topic, groupId);
         }
     }
 

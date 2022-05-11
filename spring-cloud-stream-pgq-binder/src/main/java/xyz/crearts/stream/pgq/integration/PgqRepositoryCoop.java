@@ -19,9 +19,9 @@ public class PgqRepositoryCoop extends PgqRepositoryDefault {
     public void registerConsumer() {
         var res = template.queryForObject("SELECT * FROM pgq_coop.register_subconsumer(?, ?, ?)", Long.class, topic, groupId, consumerId);
         if (res != null && 0 < res) {
-            log.info("repair subscribe for {}:{}:{}", topic, groupId, consumerId);
+            log.info("Repair subscribe for {}:{}:{}", topic, groupId, consumerId);
         } else {
-            log.info("already subscribed for {}:{}:{}", topic, groupId, consumerId);
+            log.info("Already subscribed for {}:{}:{}", topic, groupId, consumerId);
         }
     }
 

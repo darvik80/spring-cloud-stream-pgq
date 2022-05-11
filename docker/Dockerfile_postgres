@@ -4,4 +4,6 @@ RUN apt update && apt -y upgrade
 RUN apt -y install postgresql-12-pgq3 pgqd postgresql-server-dev-12 make git
 RUN git clone https://github.com/pgq/pgq-coop.git
 RUN cd pgq-coop && make install
-RUN service pgqd start
+RUN mkdir -p /docker-entrypoint-initdb.d
+
+RUN echo "service pgqd start" >> /docker-entrypoint-initdb.d/pqpd.sh

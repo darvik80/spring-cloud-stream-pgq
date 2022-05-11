@@ -29,8 +29,14 @@ public class PubSubService {
                         .setHeader(PgqHeader.TAG, "report")
                         .build()
         );
-    }
 
+        bridge.send(
+            "event_bus_coop",
+            MessageBuilder.withPayload(String.format("Hello fake: %d", System.currentTimeMillis()))
+                .setHeader(PgqHeader.TAG, "fake")
+                .build()
+        );
+    }
     @Scheduled(fixedDelay = 1000)
     public void poll() {
         while (source.poll(msg -> {

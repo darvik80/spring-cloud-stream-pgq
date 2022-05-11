@@ -14,28 +14,38 @@ import xyz.crearts.stream.pgq.properties.PgqConsumerProperties;
 import xyz.crearts.stream.pgq.properties.PgqExtendedBindingProperties;
 import xyz.crearts.stream.pgq.properties.PgqProducerProperties;
 
+/**
+ * @author ivan.kishchenko
+ */
 @Slf4j
-public class PgqMessageChannelBinder extends AbstractMessageChannelBinder<ExtendedConsumerProperties<PgqConsumerProperties>, ExtendedProducerProperties<PgqProducerProperties>, PgqProvisioningProvider>
-        implements ExtendedPropertiesBinder<MessageChannel, PgqConsumerProperties, PgqProducerProperties> {
+public class PgqMessageChannelBinder extends
+    AbstractMessageChannelBinder<ExtendedConsumerProperties<PgqConsumerProperties>,
+        ExtendedProducerProperties<PgqProducerProperties>, PgqProvisioningProvider>
+    implements ExtendedPropertiesBinder<MessageChannel, PgqConsumerProperties, PgqProducerProperties> {
     private final JdbcTemplate template;
     private final PgqExtendedBindingProperties properties;
 
-    public PgqMessageChannelBinder(JdbcTemplate template, PgqProvisioningProvider provider, PgqExtendedBindingProperties properties) {
+    public PgqMessageChannelBinder(JdbcTemplate template, PgqProvisioningProvider provider,
+        PgqExtendedBindingProperties properties) {
         super(null, provider);
         this.template = template;
         this.properties = properties;
 
         try {
-            template.execute("create extension if not exists pgq");
-            template.execute("create extension if not exists pgq_coop");
+            template.execute("CREATE EXTENSION IF NOT EXISTS pgq");
+            template.execute("CREATE EXTENSION IF NOT EXISTS pgq_coop");
         } catch (Exception ex) {
-            log.warn("\033[1;31mPlease follow to instruction in \033[38;5;15mREADME.md\033[1;31m for setup pgq & pgq_coop extensions");
-            throw new RuntimeException("Please follow to instruction in README.md for setup pgq & pgq_coop extensions", ex);
+            log.warn(
+                "\033[1;31mPlease follow to instruction in \033[38;5;15mREADME.md\033[1;31m for setup pgq & pgq_coop "
+                    + "extensions");
+            throw new RuntimeException("Please follow to instruction in README.md for setup pgq & pgq_coop extensions",
+                ex);
         }
     }
 
     @Override
-    protected MessageHandler createProducerMessageHandler(ProducerDestination destination, ExtendedProducerProperties<PgqProducerProperties> properties, MessageChannel errorChannel) {
+    protected MessageHandler createProducerMessageHandler(ProducerDestination destination,
+        ExtendedProducerProperties<PgqProducerProperties> properties, MessageChannel errorChannel) {
         return new PgqProducerMessageHandler(template, destination.getName());
     }
 
@@ -51,15 +61,22 @@ public class PgqMessageChannelBinder extends AbstractMessageChannelBinder<Extend
     }
 
     @Override
-    protected MessageProducer createConsumerEndpoint(ConsumerDestination destination, String group, ExtendedConsumerProperties<PgqConsumerProperties> properties) {
-        return new PgqInboundChannelAdapter(getRepository(destination.getName(), group, properties.getExtension()));
+    protected MessageProducer createConsumerEndpoint(ConsumerDestination destination, String group,
+        ExtendedConsumerProperties<PgqConsumerProperties> properties) {
+        return new PgqInboundChannelAdapter(
+            getRepository(destination.getName(), group, properties.getExtension()),
+            properties.getExtension()
+        );
     }
 
     @Override
-    protected PolledConsumerResources createPolledConsumerResources(String name, String group, ConsumerDestination destination, ExtendedConsumerProperties<PgqConsumerProperties> properties) {
+    protected PolledConsumerResources createPolledConsumerResources(String name, String group,
+        ConsumerDestination destination, ExtendedConsumerProperties<PgqConsumerProperties> properties) {
         return new PolledConsumerResources(
-                new PgqMessageSource(getRepository(destination.getName(), group, properties.getExtension())),
-                registerErrorInfrastructure(destination, group, properties, true)
+            new PgqMessageSource(
+                getRepository(destination.getName(), group, properties.getExtension()), properties.getExtension()
+            ),
+            registerErrorInfrastructure(destination, group, properties, true)
         );
     }
 

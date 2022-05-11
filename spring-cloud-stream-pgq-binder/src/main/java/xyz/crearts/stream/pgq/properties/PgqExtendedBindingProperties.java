@@ -7,7 +7,8 @@ import org.springframework.cloud.stream.binder.BinderSpecificPropertiesProvider;
 @ConfigurationProperties("spring.cloud.stream.pgq")
 public class PgqExtendedBindingProperties extends AbstractExtendedBindingProperties<PgqConsumerProperties, PgqProducerProperties, PgqSpecificPropertiesProvider> {
 
-    private static final String DEFAULTS_PREFIX = "spring.cloud.stream.pgq.default";
+    public  static final String DEFAULTS_PREFIX = "spring.cloud.stream.pgq.default";
+    public  static final String DEFAULTS_PREFIX_CONSUMER = DEFAULTS_PREFIX + ".consumer";
 
     @Override
     public String getDefaultsPrefix() {
